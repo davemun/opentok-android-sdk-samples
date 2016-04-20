@@ -39,7 +39,8 @@ import java.util.ArrayList;
  */
 public class HelloWorldActivity extends Activity implements
         Session.SessionListener, Publisher.PublisherListener,
-        Subscriber.VideoListener {
+        Subscriber.VideoListener ,
+        SubscriberKit.AudioStatsListener, SubscriberKit.VideoStatsListener {
 
     private static final String LOGTAG = "demo-hello-world";
     private Session mSession;
@@ -264,6 +265,8 @@ public class HelloWorldActivity extends Activity implements
     private void subscribeToStream(Stream stream) {
         mSubscriber = new Subscriber(HelloWorldActivity.this, stream);
         mSubscriber.setVideoListener(this);
+        mSubscriber.setAudioStatsListener(this);
+        mSubscriber.setVideoStatsListener(this);
         mSession.subscribe(mSubscriber);
 
         if (mSubscriber.getSubscribeToVideo()) {
@@ -394,5 +397,16 @@ public class HelloWorldActivity extends Activity implements
     public void onVideoDisableWarningLifted(SubscriberKit subscriber) {
         Log.i(LOGTAG, "Video may no longer be disabled as stream quality improved. Add UI handling here.");
     }
+
+    @Override
+    public void onAudioStats(SubscriberKit subscriberKit, SubscriberKit.SubscriberAudioStats subscriberAudioStats) {
+        Log.i(LOGTAG, "Audio Bytes Received: " + Integer.toString(subscriberAudioStats.audioBytesReceived));
+    }
+
+    @Override
+    public void onVideoStats(SubscriberKit subscriberKit, SubscriberKit.SubscriberVideoStats subscriberVideoStats) {
+        Log.i(LOGTAG, "Video Bytes Received: " + Integer.toString(subscriberVideoStats.videoBytesReceived));
+    }
+
 
 }
