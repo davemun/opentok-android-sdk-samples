@@ -39,7 +39,8 @@ import java.util.ArrayList;
  */
 public class HelloWorldActivity extends Activity implements
         Session.SessionListener, Publisher.PublisherListener,
-        Subscriber.VideoListener {
+        Subscriber.VideoListener,
+        SubscriberKit.StreamListener {
 
     private static final String LOGTAG = "demo-hello-world";
     private Session mSession;
@@ -264,6 +265,7 @@ public class HelloWorldActivity extends Activity implements
     private void subscribeToStream(Stream stream) {
         mSubscriber = new Subscriber(HelloWorldActivity.this, stream);
         mSubscriber.setVideoListener(this);
+        mSubscriber.setStreamListener(this);
         mSession.subscribe(mSubscriber);
 
         if (mSubscriber.getSubscribeToVideo()) {
@@ -393,6 +395,24 @@ public class HelloWorldActivity extends Activity implements
     @Override
     public void onVideoDisableWarningLifted(SubscriberKit subscriber) {
         Log.i(LOGTAG, "Video may no longer be disabled as stream quality improved. Add UI handling here.");
+    }
+
+    @Override
+    public void onDisconnected(SubscriberKit subscriber) {
+        Log.i(LOGTAG, "===================================================");
+        Log.i(LOGTAG, "StreamListener onDisconnected. stream disconnected: " + subscriber.getStream().getStreamId());
+        Log.i(LOGTAG, "API Key: " + OpenTokConfig.API_KEY);
+        Log.i(LOGTAG, "===================================================");
+        Log.i(LOGTAG, " ");
+    }
+
+    @Override
+    public void onReconnected(SubscriberKit subscriber) {
+        Log.i(LOGTAG, "===================================================");
+        Log.i(LOGTAG, "StreamListener reConnected. streamId reconnected: " + subscriber.getStream().getStreamId());
+        Log.i(LOGTAG, "API Key: " + OpenTokConfig.API_KEY);
+        Log.i(LOGTAG, "===================================================");
+        Log.i(LOGTAG, " ");
     }
 
 }
